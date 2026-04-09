@@ -10,6 +10,21 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('kamel-theme');
+                const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                if (savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                } else if (savedTheme === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else if (prefersLight) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <style>
         /* ============================================
            CSS VARIABLES & RESET
@@ -36,9 +51,53 @@
             --section-light: #111111;
             --card-bg: rgba(28, 28, 30, 0.6);
             --card-border: rgba(212, 175, 55, 0.12);
+            --nav-scrolled-bg: rgba(10, 10, 10, 0.95);
+            --floating-badge-bg: rgba(20, 20, 20, 0.9);
+            --hero-card-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(10, 10, 10, 0.95) 60%);
+            --hero-card-bg-hover: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(10, 10, 10, 0.95) 60%);
+            --mobile-nav-bg: rgba(5, 5, 5, 0.98);
+            --logo-panel-bg: rgba(255, 255, 255, 0.95);
+            --on-gold: #0a0a0a;
+            --iris-tagline: rgba(255, 255, 255, 0.5);
+            --iris-desc: rgba(255, 255, 255, 0.7);
+            --iris-module-text: rgba(255, 255, 255, 0.85);
             --font-display: 'Marcellus', serif;
             --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        [data-theme="light"] {
+            --black: #f6f2e7;
+            --deep-black: #fbf9f2;
+            --gold: #8b6914;
+            --gold-light: #b8860b;
+            --gold-dark: #5c4000;
+            --gold-glow: rgba(139, 105, 20, 0.12);
+            --gold-glow-strong: rgba(139, 105, 20, 0.22);
+            --white: #121212;
+            --gray-100: #1f1f1f;
+            --gray-200: #2b2722;
+            --gray-300: #4b443c;
+            --gray-400: #6f665b;
+            --gray-500: #8c8377;
+            --gray-600: #afa698;
+            --gray-700: #ddd5c8;
+            --gray-800: #ebe3d6;
+            --gray-900: #f4eee4;
+            --section-dark: #f7f2e8;
+            --section-light: #efe8db;
+            --card-bg: rgba(255, 255, 255, 0.72);
+            --card-border: rgba(139, 105, 20, 0.18);
+            --nav-scrolled-bg: rgba(246, 242, 231, 0.92);
+            --floating-badge-bg: rgba(255, 255, 255, 0.88);
+            --hero-card-bg: linear-gradient(135deg, rgba(139, 105, 20, 0.10) 0%, rgba(255, 255, 255, 0.94) 62%);
+            --hero-card-bg-hover: linear-gradient(135deg, rgba(139, 105, 20, 0.14) 0%, rgba(255, 255, 255, 0.98) 62%);
+            --mobile-nav-bg: rgba(246, 242, 231, 0.98);
+            --logo-panel-bg: rgba(255, 255, 255, 0.92);
+            --on-gold: #111111;
+            --iris-tagline: rgba(18, 18, 18, 0.5);
+            --iris-desc: rgba(18, 18, 18, 0.74);
+            --iris-module-text: rgba(18, 18, 18, 0.84);
         }
 
         *, *::before, *::after {
@@ -59,11 +118,12 @@
             line-height: 1.7;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.35s ease, color 0.35s ease;
         }
 
         ::selection {
             background: var(--gold);
-            color: var(--black);
+            color: var(--on-gold);
         }
 
         /* ============================================
@@ -168,7 +228,7 @@
         }
 
         nav.scrolled {
-            background: rgba(10, 10, 10, 0.95);
+            background: var(--nav-scrolled-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
@@ -182,6 +242,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-shrink: 0;
         }
 
         .nav-logo {
@@ -273,8 +340,46 @@
 
         .lang-btn.active {
             background: var(--gold);
-            color: var(--black);
+            color: var(--on-gold);
         }
+
+        .theme-toggle {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            background: var(--section-light);
+            color: var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--gold);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .theme-toggle .icon-sun { display: block; }
+        .theme-toggle .icon-moon { display: none; }
+        [data-theme="light"] .theme-toggle .icon-sun { display: none; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
         /* Mobile Menu */
         .hamburger {
@@ -459,7 +564,7 @@
             gap: 10px;
             padding: 14px 32px;
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--black);
+            color: var(--on-gold);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
@@ -584,7 +689,7 @@
         /* Floating badges around photo */
         .float-badge {
             position: absolute;
-            background: rgba(20, 20, 20, 0.9);
+            background: var(--floating-badge-bg);
             backdrop-filter: blur(10px);
             border: 1px solid var(--card-border);
             border-radius: 12px;
@@ -992,7 +1097,7 @@
         .exp-tab:hover {
             background: var(--gold);
             border-color: var(--gold);
-            color: var(--black);
+            color: var(--on-gold);
         }
 
         .exp-panel { display: none; }
@@ -1128,7 +1233,7 @@
             margin-bottom: 2rem;
             border: 1px solid var(--gold);
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(10, 10, 10, 0.95) 60%);
+            background: var(--hero-card-bg);
             cursor: pointer;
             transition: var(--transition);
             position: relative;
@@ -1147,7 +1252,7 @@
 
         .iris-hero-card:hover {
             border-color: var(--gold-light);
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(10, 10, 10, 0.95) 60%);
+            background: var(--hero-card-bg-hover);
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
         }
@@ -1172,13 +1277,13 @@
             font-family: var(--font-display);
             font-size: 2.2rem;
             letter-spacing: 12px;
-            color: #fff;
+            color: var(--white);
         }
 
         .iris-hero-card-tagline {
             font-size: 0.75rem;
             font-style: italic;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--iris-tagline);
             margin-top: 0.3rem;
         }
 
@@ -1189,7 +1294,7 @@
         .iris-hero-card-desc {
             font-size: 0.88rem;
             line-height: 1.7;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--iris-desc);
             margin: 0;
         }
 
@@ -1690,7 +1795,7 @@
             border: 1px solid rgba(212, 175, 55, 0.25);
             border-radius: 6px;
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.85);
+            color: var(--iris-module-text);
             background: rgba(212, 175, 55, 0.05);
             transition: var(--transition);
         }
@@ -1885,7 +1990,7 @@
             margin-bottom: 1.5rem;
             opacity: 0.85;
             filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
-            background: rgba(255,255,255,0.95);
+            background: var(--logo-panel-bg);
             border-radius: 8px;
             padding: 8px 16px;
         }
@@ -1950,7 +2055,7 @@
             width: 46px;
             height: 46px;
             background: var(--gold);
-            color: var(--black);
+            color: var(--on-gold);
             border: none;
             border-radius: 50%;
             cursor: pointer;
@@ -2004,7 +2109,7 @@
                 left: 0;
                 width: 100%;
                 height: 100vh;
-                background: rgba(5, 5, 5, 0.98);
+                background: var(--mobile-nav-bg);
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
@@ -2066,8 +2171,14 @@
                     </div>
                 </li>
             </ul>
-            <div class="hamburger" id="hamburger">
-                <span></span><span></span><span></span>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Basculer entre mode sombre et mode clair" title="Basculer le thème">
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+                </button>
+                <div class="hamburger" id="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -3112,6 +3223,41 @@
                 btn.classList.add('active');
             });
         });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                if (isLight) {
+                    document.documentElement.removeAttribute('data-theme');
+                    try { localStorage.setItem('kamel-theme', 'dark'); } catch (e) {}
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    try { localStorage.setItem('kamel-theme', 'light'); } catch (e) {}
+                }
+            });
+        }
+
+        const themeMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+        if (themeMedia) {
+            const syncThemeWithSystem = (event) => {
+                let savedTheme = null;
+                try { savedTheme = localStorage.getItem('kamel-theme'); } catch (e) {}
+                if (savedTheme) return;
+                if (event.matches) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            };
+
+            if (typeof themeMedia.addEventListener === 'function') {
+                themeMedia.addEventListener('change', syncThemeWithSystem);
+            } else if (typeof themeMedia.addListener === 'function') {
+                themeMedia.addListener(syncThemeWithSystem);
+            }
+        }
 
         // Experience tabs
         document.querySelectorAll('.exp-tab').forEach(tab => {
